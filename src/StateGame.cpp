@@ -710,10 +710,17 @@ void StateGame::mouseInput(StateManager& s, double xpos, double ypos)
 	{
 		if (!keys.alt)
 		{
-			m5::rotor5 rotH{ m5::wedge(cam.over, cam.left), hAngleDelta }; // CD
-			m5::rotor5 rotV{ m5::wedge(pd, cam.over), -vAngleDelta }; // BD
+			if (keys.shift) {
+				m5::rotor5 rotH{ m5::wedge(pd, cam.over), -hAngleDelta }; // CD
+				m5::rotor5 rotV{ m5::wedge(pd, cam.yonder), -vAngleDelta }; // BD
 
-			orientation = rotH * rotV * orientation;
+				orientation = rotH * rotV * orientation;
+			} else {
+				m5::rotor5 rotH{ m5::wedge(cam.over, cam.left), hAngleDelta }; // CD
+				m5::rotor5 rotV{ m5::wedge(pd, cam.over), -vAngleDelta }; // BD
+
+				orientation = rotH * rotV * orientation;
+			}
 		}
 		else
 		{
