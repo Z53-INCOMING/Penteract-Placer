@@ -559,8 +559,8 @@ void main()
 	vec2 ndc = uv * 2.0 - 1.0;
 	float tanHalfFov = tan(cam.vFov * 0.5);
 	
-	vec2 resolution = vec2(1280, 720);
-	int screendoor_scale = 1;
+	vec2 resolution = vec2(2560, 1440);
+	int screendoor_scale = 2;
 	vec2 scaled_resolution = resolution / float(screendoor_scale);
 
 	int cell_resolution = 5;

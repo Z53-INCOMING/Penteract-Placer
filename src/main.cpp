@@ -130,7 +130,10 @@ int main()
 	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
 #endif
 
-	GLFWwindow* window = glfwCreateWindow(1280, 720, "Penteract Placer by Mashpoe and Tr1Ngle", nullptr, nullptr);
+	GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+	const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+
+	GLFWwindow* window = glfwCreateWindow(2560, 1440, "Penteract Placer by Mashpoe and Tr1Ngle", monitor, nullptr);
 	if (!window)
 	{
 		printf("Failed to initialize the window!\n");
