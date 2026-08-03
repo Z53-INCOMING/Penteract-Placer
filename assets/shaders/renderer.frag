@@ -560,26 +560,27 @@ void main()
 	float tanHalfFov = tan(cam.vFov * 0.5);
 	
 	vec2 resolution = vec2(2560, 1440);
-	int screendoor_scale = 2;
+	int screendoor_scale = 1;
 	vec2 scaled_resolution = resolution / float(screendoor_scale);
 
-	int cell_resolution = 5;
-	int full_cell_resolution = cell_resolution + 1;
+	int cell_resolution = 7;
+	int border_width = 1;
+	int full_cell_resolution = cell_resolution + border_width;
 
 	ivec2 pixel_coordinate = ivec2(floor(uv * scaled_resolution));
 
 	ivec2 in_block = ivec2(pixel_coordinate.x % full_cell_resolution, pixel_coordinate.y % full_cell_resolution);
 	// make the borders black
-	if (in_block.x == 0 || in_block.y == 0) {
+	if (in_block.x < border_width || in_block.y < border_width) {
 		color.rgb = vec3(0.2);
 		return;
 	}
 
-	float screen_door_width = 0.125;
+	float screen_door_width = 0.25;
 
 	vec5 rd = add(
-		mul(cam.over, (float(in_block.x - 1) / float(cell_resolution - 1) - 0.5) * screen_door_width),
-		mul(cam.yonder, -(float(in_block.y - 1) / float(cell_resolution - 1) + 0.5) * screen_door_width)
+		mul(cam.over, (float(in_block.x - border_width) / float(cell_resolution - 1) - 0.5) * screen_door_width),
+		mul(cam.yonder, (float(in_block.y - border_width) / float(cell_resolution - 1) - 0.5) * screen_door_width)
 	);
 
 	vec2 snapped_uv = vec2((pixel_coordinate / full_cell_resolution) * full_cell_resolution + ivec2(full_cell_resolution/2)) / scaled_resolution;

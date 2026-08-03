@@ -425,18 +425,21 @@ void StateGame::update(StateManager& s, double dt)
 
 	audio::updateBgm();
 
-	float speed = playerSpeed * (keys.ctrl ? playerSprintMod : 1.0f);
+	float speed = playerSpeed * (keys.shift ? playerSprintMod : 1.0f);
 
 	if (flight)
 	{
 		m5::vec5 moveDir{ 0 };
 
-		if (keys.w) moveDir += cam.forward;
-		if (keys.s) moveDir -= cam.forward;
+		// a vector pointing outwards from the front of the player
+		m5::vec5 pd = m5::normalize(m5::cross(cam.left, m5::vec5::up(), cam.over, cam.yonder));
+
+		if (keys.w) moveDir += pd;
+		if (keys.s) moveDir -= pd;
 		if (keys.a) moveDir += cam.left;
 		if (keys.d) moveDir -= cam.left;
-		if (keys.q) moveDir += cam.over;
-		if (keys.e) moveDir -= cam.over;
+		if (keys.q) moveDir -= cam.over;
+		if (keys.e) moveDir += cam.over;
 		if (keys.r) moveDir += cam.yonder;
 		if (keys.f) moveDir -= cam.yonder;
 
@@ -445,7 +448,7 @@ void StateGame::update(StateManager& s, double dt)
 		vel = moveDir * speed;
 
 		if (keys.space) vel.a += speed;
-		if (keys.shift) vel.a -= speed;
+		if (keys.ctrl) vel.a -= speed;
 	}
 	else
 	{
@@ -477,8 +480,8 @@ void StateGame::update(StateManager& s, double dt)
 		if (keys.s) moveDir -= pd;
 		if (keys.a) moveDir += cam.left;
 		if (keys.d) moveDir -= cam.left;
-		if (keys.q) moveDir += cam.over;
-		if (keys.e) moveDir -= cam.over;
+		if (keys.q) moveDir -= cam.over;
+		if (keys.e) moveDir += cam.over;
 		if (keys.r) moveDir += cam.yonder;
 		if (keys.f) moveDir -= cam.yonder;
 
@@ -708,14 +711,14 @@ void StateGame::mouseInput(StateManager& s, double xpos, double ypos)
 		if (!keys.alt)
 		{
 			m5::rotor5 rotH{ m5::wedge(cam.over, cam.left), hAngleDelta }; // CD
-			m5::rotor5 rotV{ m5::wedge(pd, cam.over), vAngleDelta }; // BD
+			m5::rotor5 rotV{ m5::wedge(pd, cam.over), -vAngleDelta }; // BD
 
 			orientation = rotH * rotV * orientation;
 		}
 		else
 		{
 			m5::rotor5 rotH{ m5::wedge(cam.yonder, cam.left), hAngleDelta }; // CE
-			m5::rotor5 rotV{ m5::wedge(pd, cam.yonder), vAngleDelta }; // BE
+			m5::rotor5 rotV{ m5::wedge(pd, cam.yonder), -vAngleDelta }; // BE
 
 			orientation = rotH * rotV * orientation;
 		}

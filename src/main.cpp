@@ -122,6 +122,9 @@ int main()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
+	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+	glfwWindowHint(GLFW_FLOATING, GLFW_TRUE);
 	const char* sessionType = std::getenv("XDG_SESSION_TYPE");
 	if (sessionType && std::string(sessionType) == "wayland")
 		glfwWindowHintString(GLFW_WAYLAND_APP_ID, "dev.tr1ngle.pp");
@@ -133,7 +136,7 @@ int main()
 	GLFWmonitor* monitor = glfwGetPrimaryMonitor();
 	const GLFWvidmode* mode = glfwGetVideoMode(monitor);
 
-	GLFWwindow* window = glfwCreateWindow(2560, 1440, "Penteract Placer by Mashpoe and Tr1Ngle", monitor, nullptr);
+	GLFWwindow* window = glfwCreateWindow(mode->width, mode->height, "Penteract Placer by Mashpoe and Tr1Ngle, Tessimal Mod", nullptr, nullptr);
 	if (!window)
 	{
 		printf("Failed to initialize the window!\n");
