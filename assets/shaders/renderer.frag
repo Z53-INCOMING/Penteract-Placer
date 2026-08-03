@@ -551,20 +551,43 @@ float waterWave(in vec5 p, float timeOffset, float waveScaleH, float waveHeight)
 
 const float slopeUB = 1.0;
 const float g = sin(atan(1.0, slopeUB));
+
 void main()
 {
 	float aspect = screenSize.x * screenSize.w;
 	vec5 ro = cam.pos;
 	vec2 ndc = uv * 2.0 - 1.0;
 	float tanHalfFov = tan(cam.vFov * 0.5);
-	float px = ndc.x * tanHalfFov * aspect;
-	float py = -ndc.y * tanHalfFov;
-	vec5 rd = normalize5(
-		add(
-			add(cam.forward, mul(cam.left, -px)),
-			mul(cam.up, -py)
-		)
+	
+	vec2 resolution = vec2(1280, 720);
+	int screendoor_scale = 1;
+	vec2 scaled_resolution = resolution / float(screendoor_scale);
+
+	int cell_resolution = 5;
+	int full_cell_resolution = cell_resolution + 1;
+
+	ivec2 pixel_coordinate = ivec2(floor(uv * scaled_resolution));
+
+	ivec2 in_block = ivec2(pixel_coordinate.x % full_cell_resolution, pixel_coordinate.y % full_cell_resolution);
+	// make the borders black
+	if (in_block.x == 0 || in_block.y == 0) {
+		color.rgb = vec3(0.2);
+		return;
+	}
+
+	float screen_door_width = 0.125;
+
+	vec5 rd = add(
+		mul(cam.over, (float(in_block.x - 1) / float(cell_resolution - 1) - 0.5) * screen_door_width),
+		mul(cam.yonder, -(float(in_block.y - 1) / float(cell_resolution - 1) + 0.5) * screen_door_width)
 	);
+
+	vec2 snapped_uv = vec2((pixel_coordinate / full_cell_resolution) * full_cell_resolution + ivec2(full_cell_resolution/2)) / scaled_resolution;
+	vec2 centered_scaled_uv = (snapped_uv - vec2(0.5)) * vec2(aspect, 1.0) * tanHalfFov * 2.0;
+
+	rd = add(rd, mul(cam.left, -centered_scaled_uv.x));
+	rd = add(rd, mul(cam.up, centered_scaled_uv.y));
+	rd = normalize5(add(rd, cam.forward));
 	
 	color = vec4(vec3(0.0), 1.0);
 	
